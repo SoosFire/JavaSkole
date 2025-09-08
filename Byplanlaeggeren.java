@@ -1,11 +1,16 @@
 import java.util.Scanner;
 
 public class Byplanlaeggeren {
+    enum TimeOfDay{
+            DAG, AFTEN, NAT
+        }
     public static void main(String[]args) {
         try (Scanner input = new Scanner(System.in)) {
 
+        
+
         // Bruger input
-        String timeDay = "";
+        TimeOfDay timeDay = null;
         String amountTraffic = "";
         String typeArea = "";
         String emergency = "";
@@ -27,10 +32,11 @@ public class Byplanlaeggeren {
         // Tidspunkt
         System.out.println("Indtast tid på dagen (dag/aften/nat)");
         while (true){
-        timeDay = input.nextLine().toLowerCase();
-            if (timeDay.equals("dag") || timeDay.equals("aften") || timeDay.equals("nat")){
+            String timeDayInput = input.nextLine().toUpperCase();
+            try {
+                timeDay = TimeOfDay.valueOf(timeDayInput.toUpperCase());
                 break;
-            } else {
+            } catch (IllegalArgumentException e) {
                 System.out.println("Vælg venligst en gyldig tid på dagen");
             }
         }
@@ -70,27 +76,30 @@ public class Byplanlaeggeren {
 
 
         // --------------------------------------------------------------------- //
-        // LYSSIGNAL
-
-        // GRØNT lys
-        if ((timeDay.equals("dag") && amountTraffic.equals("lav")) || emergency.equals("ja")){
-            farveSignal = signalGrønt;
-            beskedStatus = " - Trafikken flyder frit!";
-        } 
-
-        // GULT lys
-        else if (timeDay.equals("aften") || (timeDay.equals("nat") && amountTraffic.equals("lav"))){
-            farveSignal = signalGult;
-            beskedStatus = " - Der er lidt trafik";
-        }
-
-        // RØDT lys
-        else if ((timeDay.equals("nat") && amountTraffic.equals("høj")) || amountTraffic.equals("høj")){
-            farveSignal = signalRødt;
-            beskedStatus = " - Trafikken er høj";
-        }
-        else {
-            beskedStatus = ("Fejl: Vi kan ikke se trafikken lige nu");
+        switch (timeDay){
+            case DAG:
+                if (amountTraffic.equals("lav") || emergency.equals("ja")){
+                    farveSignal = signalGrønt;
+                    beskedStatus = " - Trafikken flyder frit!";
+                    break;
+                }
+            case AFTEN:
+                    farveSignal = signalGult;
+                    beskedStatus = " - Der er lidt trafik";
+                    break;
+                
+            case NAT:
+                if (amountTraffic.equals("lav")){
+                    farveSignal = signalGult;
+                    beskedStatus = " - Der er lidt trafik";
+                } else {
+                    farveSignal = signalRødt;
+                    beskedStatus = " - Trafikken er høj";
+                }
+                    break;
+            default:
+                beskedStatus = "Fejl: Vi kan ikke se trafikken lige nu";
+                farveSignal = signalRødt;
         }
 
         // --------------------------------------------------------------------- //
