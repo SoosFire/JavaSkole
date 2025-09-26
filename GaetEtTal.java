@@ -41,8 +41,6 @@ public class GaetEtTal {
             String wantToPlayAgain = input.nextLine().trim().toLowerCase();
             playAgain = playAgainMethod(input, wantToPlayAgain);
         } while (playAgain);
-
-
     }
 
     // ------------------------------------------------------------------------------------- //
